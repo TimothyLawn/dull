@@ -7,7 +7,7 @@ import RickAndMortyList from './RickAndMortyList'; // adjust path as needed
 
 const Dashboard = () => {
   return (
-    <div>
+    <div className="dashboard">
       <nav>
         <ul>
           <li>
