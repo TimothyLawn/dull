@@ -1,131 +1,106 @@
-// src/components/NewsBlogger.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import "./../assets/dull.css"
 
+const NewsViewer = () => {
+  const [query, setQuery] = useState('');
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-const articles = [
-  {
-    title: 'Breaking: Market Hits Record Highs',
-    author: 'Tim Shedrack',
-    content: 'The stock market hit new records today with tech companies leading the charge...',
-    image: 'https://picsum.photos/id/1011/800/400'
-  },
-  {
-    title: 'AI Revolution: What to Expect',
-    author: 'Jane Doe',
-    content: 'Artificial Intelligence is transforming industries at a fast pace. Here’s what experts predict...',
-    image: 'https://picsum.photos/id/1027/800/400'
-  },
-  {
-    title: '5 Tips to Improve Your Writing',
-    author: 'John Smith',
-    content: 'Want to be a better writer? Start by reading more and practicing daily...',
-    image: 'https://picsum.photos/id/1035/800/400'
-  },
-  {
-    title: 'Global Warming Threatens Coastal Cities',
-    author: 'Sarah Green',
-    content: 'Sea levels are rising at an alarming rate. Scientists urge immediate climate action.',
-    image: 'https://picsum.photos/id/1042/800/400'
-  },
-  {
-    title: 'Top 10 Travel Destinations for 2025',
-    author: 'Alex Travels',
-    content: 'From Bali to Iceland, here are the must-visit locations for next year’s wanderlust.',
-    image: 'https://picsum.photos/id/1053/800/400'
-  },
-  {
-    title: 'React 19 Released: What’s New',
-    author: 'Dev News',
-    content: 'The latest version of React includes performance upgrades and new hooks.',
-    image: 'https://picsum.photos/id/1060/800/400'
-  },
-  {
-    title: 'Health Tips: Eating Clean on a Budget',
-    author: 'Dr. Lily',
-    content: 'You can eat healthy without spending too much. Here’s how to plan your meals wisely.',
-    image: 'https://picsum.photos/id/1070/800/400'
-  },
-  {
-    title: 'The Rise of Remote Work in Africa',
-    author: 'Emeka Obi',
-    content: 'More Africans are joining the remote work revolution and earning globally.',
-    image: 'https://picsum.photos/id/1084/800/400'
-  },
-  {
-    title: 'How to Start a Successful YouTube Channel',
-    author: 'Content Master',
-    content: 'Want to grow on YouTube? These beginner tips will set you up for success.',
-    image: 'https://picsum.photos/id/109/800/400'
-  },
-  {
-    title: 'Football: Champions League Recap',
-    author: 'Sports Today',
-    content: 'A thrilling night of goals and drama leaves fans speechless.',
-    image: 'https://picsum.photos/id/110/800/400'
-  },
-  {
-    title: 'Student Builds App That Solves Math Homework',
-    author: 'Tech Daily',
-    content: 'A 16-year-old genius created an AI-powered app that solves math problems in seconds.',
-    image: 'https://picsum.photos/id/111/800/400'
-  },
-  {
-    title: 'Nigerian Fashion Goes Global',
-    author: 'Style Africa',
-    content: 'Designers from Lagos are taking the global stage with bold new styles.',
-    image: 'https://picsum.photos/id/112/800/400'
-  },
-  {
-    title: 'The Future of Electric Cars',
-    author: 'Auto World',
-    content: 'Electric vehicles are becoming more affordable and eco-friendly.',
-    image: 'https://picsum.photos/id/113/800/400'
-  },
-  {
-    title: 'The Secret Behind Viral TikToks',
-    author: 'Social Buzz',
-    content: 'Ever wonder why some TikToks go viral? It’s all about timing, trends, and engagement.',
-    image: 'https://picsum.photos/id/114/800/400'
-  },
-  {
-    title: 'How to Stay Focused While Studying',
-    author: 'Exam Coach',
-    content: 'Get better grades by mastering your study environment and routines.',
-    image: 'https://picsum.photos/id/115/800/400'
-  },
-  {
-    title: 'Coding Bootcamps: Worth It in 2025?',
-    author: 'Dev Careers',
-    content: 'Bootcamps can be life-changing, but are they the best way to learn in today’s world?',
-    image: 'https://picsum.photos/id/116/800/400'
-  },
-  {
-    title: 'Mobile Photography Tips from Pros',
-    author: 'Photo Weekly',
-    content: 'Take stunning photos with just your phone. Here’s what the pros recommend.',
-    image: 'https://picsum.photos/id/117/800/400'
-  }
-];
+  const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
+  const DEFAULT_TOPIC = 'latest';
+  const STORAGE_KEY = 'cached_news';
+  const CACHE_EXPIRY_MS = 24 * 60 * 60 * 1000;
+  const number = 120345687
 
-export default function Dullnews() {
+  const fetchNews = async (searchQuery = DEFAULT_TOPIC, saveToCache = true) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `https://newsapi.org/v2/everything?q=${encodeURIComponent(searchQuery)}&apiKey=${API_KEY}`
+      );
+      const fetchedArticles = response.data.articles;
+      setArticles(fetchedArticles);
+
+      if (saveToCache) {
+        const cache = {
+          timestamp: Date.now(),
+          articles: fetchedArticles,
+          query: searchQuery,
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(cache));
+      }
+    } catch (error) {
+      console.error('Error fetching news:', error);
+      setArticles([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const cache = localStorage.getItem(STORAGE_KEY);
+    if (cache) {
+      const { timestamp, articles: cachedArticles, query: cachedQuery } = JSON.parse(cache);
+      const now = Date.now();
+      if (now - timestamp < CACHE_EXPIRY_MS) {
+        console.log('✅ Loaded news from cache');
+        setArticles(cachedArticles);
+        setQuery(cachedQuery || '');
+        return;
+      } else {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    }
+    fetchNews();
+  }, []);
+
+  const handleSearch = () => {
+    if (query.trim()) {
+      fetchNews(query);
+    }
+  };
+
   return (
     <div className="news-container">
-      <header className="news-header">
-        <h1>📰 Dull News Blogger</h1>
-        <p>Your daily dose of fresh and fearless stories. arise and shine</p>
-      </header>
+      <h2 className="news-header">🗞️ News Viewer</h2>
 
-      <main className="articles">
-        {articles.map((article, index) => (
-          <article key={index} className="news-article">
-              <img src={article.image} alt={article.title} className="article-image" /> 
-             <h2>{article.title}</h2>
-        
-            <p className="author">By {article.author}</p>
-            <p>{article.content}</p>
-          </article>
-        ))}
-      </main>
+      <div className="news-search">
+        <input
+          type="text"
+          placeholder="Search for news (e.g. bitcoin, AI)"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        <button onClick={handleSearch}>Search</button>
+      </div>
+
+      {loading && <p>Loading articles...</p>}
+      {!loading && articles.length === 0 && <p>No articles found.</p>}
+
+      {articles.length > 0 && (
+        <ul className="article-list">
+        {number.toLocaleString()}
+          {articles.map((article, index) => (
+            <li key={index} className="article-item">
+              <h3>{article.title}</h3>
+              <p>
+                <strong>{article.source.name}</strong> -{' '}
+                {new Date(article.publishedAt).toLocaleString()}
+              </p>
+              {article.urlToImage && (
+                <img src={article.urlToImage} alt="news" />
+              )}
+              <p>{article.description}</p>
+              <a href={article.url} target="_blank" rel="noopener noreferrer">
+                Read more 🔗
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
-}
+};
+
+export default NewsViewer;

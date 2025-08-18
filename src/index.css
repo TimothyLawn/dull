@@ -48,7 +48,62 @@
   padding: 0em 1em;
   background-color: #000;
 }
+.name{
+  padding: 0.7em 5em;
+  margin-bottom: 1em;
+  width: 70%; 
+}
+.gender{
+  padding: 0.7em 5em;
+  margin-bottom: 1em;
+  width: 70%;
+}
+.react{
+  padding: 0.7em 5em;
+  margin-bottom: 0.5em;
+  width: 30%;
+}
+.skills{
+  padding: 0.7em 5em;
+  margin-bottom: 1em;
+  width: 30%;
+}
+.bio-textarea{
+  padding: 0.7em 5em;
+  margin-bottom: 1em;
+  width: 70%;
 
+}
+.handle-submit{
+  width: 100%;
+  padding: 1em 5em;
+  background-color: hsla(60, 22%, 96%, 0.898);
+}
+.phone{
+  padding: 0.7em 4em 2em 1em;
+  margin-bottom: 1em;
+  width: 70%;
+}
+.dob{
+  padding: 0.7em 5em;
+  margin-bottom: 1em;
+  width: 70%;
+}
+.email{
+  padding: 0.7em 5em;
+  margin-bottom: 1em;
+  width: 70%;
+}
+.age{
+  padding: 0.7em 5em;
+  margin-bottom: 1em;
+  width: 70%;
+}
+.password{
+  padding: 0.7em 3em;
+  margin-bottom: 1em;
+  width: 70%;
+}
 .news-article {
   background-color: #ffffff;
   border-radius: 0.5em;
