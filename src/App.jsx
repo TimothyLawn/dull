@@ -14,7 +14,7 @@ function App() {
         <Route path='/dullnews' element={<Dullnews />} />
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/animesearch" element={<Animesearch />} />
-        <Route path="/jikananimelist" element={<JikanAnimeList />} />
+        
       </Routes>
     </Router>
   );
