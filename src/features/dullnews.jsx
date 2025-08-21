@@ -6,27 +6,30 @@ const NewsViewer = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const API_KEY = import.meta.env.REACT_APP_API_KEY ;
-  const DEFAULT_TOPIC = "latest";
+  const API_KEY = "2e6aacdc74c3459ab3444a42e804131b";
+  const DEFAULT_TOPIC = "latest"; // We'll use this as default text search
   const STORAGE_KEY = "cached_news";
   const CACHE_EXPIRY_MS = 24 * 60 * 60 * 1000;
 
-  // Fetch function
   const fetchNews = async (searchQuery = DEFAULT_TOPIC, saveToCache = true) => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `https://newsapi.org/v2/everything?q=${encodeURIComponent(
-          searchQuery
-        )}&apiKey=${API_KEY}`
-      );
-      const fetchedArticles = response.data.articles;
-      setArticles(fetchedArticles);
+     const response = await axios.get(
+  `https://api.worldnewsapi.com/search-news?text=${encodeURIComponent(searchQuery)}&language=en`, {
+    headers: {
+      "x-api-key": API_KEY
+    }
+  }
+);
+
+
+      const fetched = response.data.news || [];
+      setArticles(fetched);
 
       if (saveToCache) {
         const cache = {
           timestamp: Date.now(),
-          articles: fetchedArticles,
+          articles: fetched,
           query: searchQuery,
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(cache));
@@ -39,14 +42,12 @@ const NewsViewer = () => {
     }
   };
 
-  // Load cached or default on first render
   useEffect(() => {
     const cache = localStorage.getItem(STORAGE_KEY);
     if (cache) {
       const { timestamp, articles: cachedArticles, query: cachedQuery } =
         JSON.parse(cache);
-      const now = Date.now();
-      if (now - timestamp < CACHE_EXPIRY_MS) {
+      if (Date.now() - timestamp < CACHE_EXPIRY_MS) {
         console.log("✅ Loaded news from cache");
         setArticles(cachedArticles);
         setQuery(cachedQuery || "");
@@ -58,13 +59,12 @@ const NewsViewer = () => {
     fetchNews();
   }, []);
 
-  // Debounced auto-search (only if query is 3+ chars)
   useEffect(() => {
-    if (query.trim().length < 3) return; // skip short queries
+    if (query.trim().length < 3) return;
 
     const timer = setTimeout(() => {
       fetchNews(query, false);
-    }, 600); // debounce delay (600ms)
+    }, 600);
 
     return () => clearTimeout(timer);
   }, [query]);
@@ -78,7 +78,6 @@ const NewsViewer = () => {
   return (
     <div className="news-container">
       <h2 className="news-header">🗞️ News Viewer</h2>
-
       <div className="news-search">
         <input
           type="text"
@@ -98,17 +97,17 @@ const NewsViewer = () => {
             <li key={index} className="article-item">
               <h3>{article.title}</h3>
               <p>
-                <strong>{article.source.name}</strong> –{" "}
-                {new Date(article.publishedAt).toLocaleString()}
+                <strong>{article.source_country || "Unknown source"}</strong>{" "}
+                – {new Date(article.publish_date).toLocaleString()}
               </p>
-              {article.urlToImage && (
+              {article.image && (
                 <img
-                  src={article.urlToImage}
+                  src={article.image}
                   alt="news"
                   style={{ maxWidth: "100%" }}
                 />
               )}
-              <p>{article.description}</p>
+              <p>{article.summary || article.text}</p>
               <a
                 href={article.url}
                 target="_blank"
