@@ -6,7 +6,7 @@ const NewsViewer = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const API_KEY ="7509742de02742988fcb2057102b67b0";
+  const API_KEY = import.meta.env.REACT_APP_API_KEY ;
   const DEFAULT_TOPIC = "latest";
   const STORAGE_KEY = "cached_news";
   const CACHE_EXPIRY_MS = 24 * 60 * 60 * 1000;
