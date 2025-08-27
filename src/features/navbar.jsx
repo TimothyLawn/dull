@@ -1,9 +1,10 @@
 import { Link} from 'react-router-dom';
+import AnimalLogo from "./../features/AnimalLogo"
 
 export default function Navbar() {
   return (
     <nav className="nav">
-      <h2 className="logo"></h2>
+      <AnimalLogo className="logo"/>
       <ul className="nav-list">
         <li className="link">Home</li>
         <li className="link">About</li>

@@ -1,0 +1,78 @@
+/* === Base Logo === */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.1rem;
+  font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  font-size: 2.3rem;
+  color: #111827; /* slate-900 */
+  cursor: default;
+  user-select: none;
+  transition: color 0.3s ease;
+}
+
+.word {
+  line-height: 1;
+}
+
+.accent {
+  color: #6b7280; /* subtle gray */
+}
+
+/* === Cat Mark === */
+.mark {
+  width: 44px;
+  height: 34px;
+  display: inline-block;
+  color: currentColor;
+}
+
+/* Base fill for cat head/ears */
+.cat-part {
+  fill: currentColor;
+}
+
+/* Eyes */
+.eye {
+  fill: #fff;
+  transform-origin: center;
+  animation: blink 4s infinite;
+}
+
+/* Blink timing */
+.eye:nth-child(4) { animation-delay: 0s; }
+.eye:nth-child(5) { animation-delay: 0.25s; }
+
+@keyframes blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  96% { transform: scaleY(0.1); }
+}
+
+/* Nose */
+.nose {
+  fill: #fff;
+}
+
+/* Whiskers */
+.whisker {
+  stroke: #fff;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+}
+
+/* === Hover Effect === */
+.logo:hover {
+  color: #2563eb; /* blue-600 accent */
+  transform: scale(1.03);
+  transition: transform 0.25s ease, color 0.3s ease;
+}
+
+/* === Dark Mode === */
+.dark .logo {
+  color: #e5e7eb; /* slate-200 */
+}
+.dark .accent {
+  color: #9ca3af; /* gray-400 */
+}
