@@ -29,7 +29,7 @@ const RickAndMortyList = () => {
       <h2>🛸 Rick & Morty Characters</h2>
       <div className="clown" style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
         {characters.map((char) => (
-          <div className="row"
+          <div  
             key={char.id}
             style={{
               border: "1px solid #ccc",
